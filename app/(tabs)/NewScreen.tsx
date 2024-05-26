@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 const App = () => {
   const navigation = useNavigation();
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(1000); // 50 seconds timer
+  const [timeLeft, setTimeLeft] = useState(10000); // 50 seconds timer
   const [gameOver, setGameOver] = useState(false);
   const [trashesClicked, setTrashesClicked] = useState(0);
   const [trash1Opacity] = useState(new Animated.Value(1));
@@ -60,13 +60,6 @@ const App = () => {
   const handleTrashClick = (trashNumber: Number) => {
     if (!gameOver) {
       playSound(clickSound);
-      // setTrashesClicked((prevTrashesClicked) => {
-      //   const newTrashesClicked = prevTrashesClicked + 1;
-      //   if (newTrashesClicked === 3) {
-      //     handleGameOver();
-      //   }
-      //   return newTrashesClicked;
-      // });
 
       if (trashNumber === 1) {
         animateTrash(trash1Opacity);
@@ -146,46 +139,77 @@ const App = () => {
   }, [timeLeft, gameOver]);
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('@/assets/images/back2.png')}
+        style={styles.backgroundImage}
+      >
+        {/* Overlay */}
+        {showOverlay && (
+          <View style={styles.overlay} />
+        )}
+
+        <TouchableOpacity style={styles.container} onPress={handleScreenClick} activeOpacity={1}>
+          {/* Game Over Div */}
+          {showGameOverDiv && (
+            <Animated.View style={[styles.gameOverDiv, { opacity: gameOverDivOpacity }]}>
+              <Animated.Image
+                source={require('@/assets/images/A2.png')}
+                style={[styles.gameOverImage, { transform: [{ translateY: gameOverImagePosition }] }]}
+              />
+            </Animated.View>
+          )}
+
+          <Animated.View style={[styles.trash, { top: '55%', left: '40%', opacity: trash1Opacity }]}>
+            <TouchableOpacity onPress={() => handleTrashClick(1)}>
+              <Image
+                source={require('@/assets/images/bottle_trash.png')}
+                style={styles.bottle_trash}
+              />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Animated.View style={[styles.trash, { top: '59%', left: '75%', opacity: trash2Opacity }]}>
+            <TouchableOpacity onPress={() => handleTrashClick(2)}>
+              <Image
+                source={require('@/assets/images/lemonade_trash.png')}
+                style={styles.lemonade_trash}
+              />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Animated.View style={[styles.trash, { top: '62%', left: '86%', opacity: trash2Opacity }]}>
+            <TouchableOpacity onPress={() => handleTrashClick(2)}>
+              <Image
+                source={require('@/assets/images/paper_trash.png')}
+                style={styles.paper_trash}
+              />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Animated.View style={[styles.apple_trash, { top: '69%', right: '34%', opacity: trash3Opacity }]}>
+            <TouchableOpacity onPress={() => handleTrashClick(3)}>
+              <Image
+                source={require('@/assets/images/apple_trash.png')}
+                style={styles.apple_trash}
+              />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Animated.View style={[styles.trash2, { top: '85%', right: '70%', opacity: trash3Opacity }]}>
+            <TouchableOpacity onPress={() => handleTrashClick(3)}>
+              <Image
+                source={require('@/assets/images/paper2_trash.png')}
+                style={styles.trash2}
+              />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Text style={styles.scoreText}>Score: {trashesClicked}</Text>
+          <Text style={styles.timeText}>Time Left: {timeLeft}</Text>
+        </TouchableOpacity>
+      </ImageBackground>
+    </View>
   );
 };
 
@@ -202,16 +226,31 @@ const styles = StyleSheet.create({
     width: 65,
     height: 60,
   },
+  bottle_trash: {
+    position: 'absolute',
+    width: 55,
+    height: 30,
+  },
 
   paper_trash: {
     position: 'absolute',
-    width: 90,
-    height: 60,
+    width: 70,
+    height: 40,
+  },
+  apple_trash: {
+    position: 'absolute',
+    width: 50,
+    height: 30,
+  },
+  lemonade_trash: {
+    position: 'absolute',
+    width: 30,
+    height: 20,
   },
   trash2: {
     position: 'absolute',
-    width: 164,
-    height: 160,
+    width: 70,
+    height: 50,
   },
   scoreText: {
     position: 'absolute',
