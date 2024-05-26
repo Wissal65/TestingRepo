@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ImageBackground, Image, TouchableOpacity, Text, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
-import { useNavigation } from '@react-navigation/native';
-import { router } from 'expo-router';
 
 const App = () => {
-  const navigation = useNavigation();
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(1000); // 50 seconds timer
+  const [timeLeft, setTimeLeft] = useState(100); // 50 seconds timer
   const [gameOver, setGameOver] = useState(false);
   const [trashesClicked, setTrashesClicked] = useState(0);
   const [trash1Opacity] = useState(new Animated.Value(1));
@@ -60,13 +57,13 @@ const App = () => {
   const handleTrashClick = (trashNumber: Number) => {
     if (!gameOver) {
       playSound(clickSound);
-      // setTrashesClicked((prevTrashesClicked) => {
-      //   const newTrashesClicked = prevTrashesClicked + 1;
-      //   if (newTrashesClicked === 3) {
-      //     handleGameOver();
-      //   }
-      //   return newTrashesClicked;
-      // });
+      setTrashesClicked((prevTrashesClicked) => {
+        const newTrashesClicked = prevTrashesClicked + 1;
+        if (newTrashesClicked === 3) {
+          handleGameOver();
+        }
+        return newTrashesClicked;
+      });
 
       if (trashNumber === 1) {
         animateTrash(trash1Opacity);
@@ -86,14 +83,6 @@ const App = () => {
     }).start(() => {
       console.log('Animation completed');
       playSound(disappearSound);
-       // Increment trashesClicked after the animation is complete
-       setTrashesClicked((prevTrashesClicked) => {
-        const newTrashesClicked = prevTrashesClicked + 1;
-        if (newTrashesClicked === 3) {
-          handleGameOver();
-        }
-        return newTrashesClicked;
-      });
     });
   };
 
@@ -125,11 +114,6 @@ const App = () => {
       duration: 1000, // Adjust as needed
       useNativeDriver: true,
     }).start();
-    // Navigate to the new screen after 10 seconds
-    setTimeout(() => {
-      // navigation.navigate('NewScreen');
-      router.push("/NewScreen");
-    }, 10000);
   };
 
 
@@ -167,14 +151,19 @@ const App = () => {
             </Animated.View>
           )}
 
-          <Animated.View style={[styles.trash, { top: '52%', left: '27%', opacity: trash1Opacity }]}>
+          <Animated.View style={[styles.trash, { top: '55%', left: '25%', opacity: trash1Opacity }]}>
             <TouchableOpacity onPress={() => handleTrashClick(1)}>
               <Image
-                source={require('@/assets/images/trash4.png')}
+                source={require('@/assets/images/trash.png')}
                 style={styles.trash}
               />
             </TouchableOpacity>
           </Animated.View>
+
+          <Image
+            source={require('@/assets/images/flies.png')}
+            style={[styles.flies, { top: '50%', left: '25%' }]}
+          />
 
           <Animated.View style={[styles.trash, { top: '65%', left: '73%', opacity: trash2Opacity }]}>
             <TouchableOpacity onPress={() => handleTrashClick(2)}>
@@ -185,16 +174,21 @@ const App = () => {
             </TouchableOpacity>
           </Animated.View>
 
-          <Animated.View style={[styles.trash2, { top: '67%', right: '49%', opacity: trash3Opacity }]}>
+          <Animated.View style={[styles.trash2, { top: '78%', right: '60%', opacity: trash3Opacity }]}>
             <TouchableOpacity onPress={() => handleTrashClick(3)}>
               <Image
-                source={require('@/assets/images/trash4.png')}
+                source={require('@/assets/images/trash.png')}
                 style={styles.trash2}
               />
             </TouchableOpacity>
           </Animated.View>
 
-          <Text style={styles.scoreText}>Score: {trashesClicked}</Text>
+          <Image
+            source={require('@/assets/images/bad_smell.png')}
+            style={[styles.bad_smell, { top: '68%', right: '70%' }]}
+          />
+
+          <Text style={styles.scoreText}>Score: {score}</Text>
           <Text style={styles.timeText}>Time Left: {timeLeft}</Text>
         </TouchableOpacity>
       </ImageBackground>
@@ -212,10 +206,14 @@ const styles = StyleSheet.create({
   },
   trash: {
     position: 'absolute',
-    width: 65,
+    width: 70,
+    height: 40,
+  },
+  flies: {
+    position: 'absolute',
+    width: 80,
     height: 60,
   },
-
   paper_trash: {
     position: 'absolute',
     width: 90,
@@ -223,8 +221,13 @@ const styles = StyleSheet.create({
   },
   trash2: {
     position: 'absolute',
-    width: 164,
-    height: 160,
+    width: 130,
+    height: 80,
+  },
+  bad_smell: {
+    position: 'absolute',
+    width: 50,
+    height: 80,
   },
   scoreText: {
     position: 'absolute',
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 100,
+    bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
