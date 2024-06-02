@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 const App = () => {
   const navigation = useNavigation();
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(10000); // 50 seconds timer
+  const [timeLeft, setTimeLeft] = useState(50); // 50 seconds timer
   const [gameOver, setGameOver] = useState(false);
   const [trashesClicked, setTrashesClicked] = useState(0);
   const [trash1Opacity] = useState(new Animated.Value(1));
@@ -60,7 +60,14 @@ const App = () => {
   const handleTrashClick = (trashNumber: Number) => {
     if (!gameOver) {
       playSound(clickSound);
-
+      // setTrashesClicked((prevTrashesClicked) => {
+      //   const newTrashesClicked = prevTrashesClicked + 1;
+      //   if (newTrashesClicked === 3) {
+      //     handleGameOver();
+      //   }
+      //   return newTrashesClicked;
+      // });
+      
       if (trashNumber === 1) {
         animateTrash(trash1Opacity);
       } else if (trashNumber === 2) {
@@ -82,6 +89,7 @@ const App = () => {
        // Increment trashesClicked after the animation is complete
        setTrashesClicked((prevTrashesClicked) => {
         const newTrashesClicked = prevTrashesClicked + 1;
+        setScore(newTrashesClicked);
         if (newTrashesClicked === 3) {
           handleGameOver();
         }
@@ -97,7 +105,7 @@ const App = () => {
     setShowOverlay(true);
     setShowGameOverDiv(true);
     try {
-      await AsyncStorage.setItem('score', finalScore.toString());
+      await AsyncStorage.setItem('score', score.toString());
       console.log('Score saved successfully.');
     } catch (error) {
       console.error('Error saving score:', error);
@@ -121,7 +129,7 @@ const App = () => {
     // Navigate to the new screen after 10 seconds
     setTimeout(() => {
       // navigation.navigate('NewScreen');
-      router.push("/NewScreen");
+      router.push("/game1_2");
     }, 10000);
   };
 
@@ -141,7 +149,7 @@ const App = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('@/assets/images/back2.png')}
+        source={require('@/assets/images/back1.png')}
         style={styles.backgroundImage}
       >
         {/* Overlay */}
@@ -160,25 +168,16 @@ const App = () => {
             </Animated.View>
           )}
 
-          <Animated.View style={[styles.trash, { top: '55%', left: '40%', opacity: trash1Opacity }]}>
+          <Animated.View style={[styles.trash, { top: '52%', left: '27%', opacity: trash1Opacity }]}>
             <TouchableOpacity onPress={() => handleTrashClick(1)}>
               <Image
-                source={require('@/assets/images/bottle_trash.png')}
-                style={styles.bottle_trash}
+                source={require('@/assets/images/trash4.png')}
+                style={styles.trash}
               />
             </TouchableOpacity>
           </Animated.View>
 
-          <Animated.View style={[styles.trash, { top: '59%', left: '75%', opacity: trash2Opacity }]}>
-            <TouchableOpacity onPress={() => handleTrashClick(2)}>
-              <Image
-                source={require('@/assets/images/lemonade_trash.png')}
-                style={styles.lemonade_trash}
-              />
-            </TouchableOpacity>
-          </Animated.View>
-
-          <Animated.View style={[styles.trash, { top: '62%', left: '86%', opacity: trash2Opacity }]}>
+          <Animated.View style={[styles.trash, { top: '65%', left: '73%', opacity: trash2Opacity }]}>
             <TouchableOpacity onPress={() => handleTrashClick(2)}>
               <Image
                 source={require('@/assets/images/paper_trash.png')}
@@ -187,25 +186,16 @@ const App = () => {
             </TouchableOpacity>
           </Animated.View>
 
-          <Animated.View style={[styles.apple_trash, { top: '69%', right: '34%', opacity: trash3Opacity }]}>
+          <Animated.View style={[styles.trash2, { top: '67%', right: '49%', opacity: trash3Opacity }]}>
             <TouchableOpacity onPress={() => handleTrashClick(3)}>
               <Image
-                source={require('@/assets/images/apple_trash.png')}
-                style={styles.apple_trash}
-              />
-            </TouchableOpacity>
-          </Animated.View>
-
-          <Animated.View style={[styles.trash2, { top: '85%', right: '70%', opacity: trash3Opacity }]}>
-            <TouchableOpacity onPress={() => handleTrashClick(3)}>
-              <Image
-                source={require('@/assets/images/paper2_trash.png')}
+                source={require('@/assets/images/trash4.png')}
                 style={styles.trash2}
               />
             </TouchableOpacity>
           </Animated.View>
 
-          <Text style={styles.scoreText}>Score: {trashesClicked}</Text>
+          <Text style={styles.scoreText}>Score: {score}</Text>
           <Text style={styles.timeText}>Time Left: {timeLeft}</Text>
         </TouchableOpacity>
       </ImageBackground>
@@ -226,31 +216,16 @@ const styles = StyleSheet.create({
     width: 65,
     height: 60,
   },
-  bottle_trash: {
-    position: 'absolute',
-    width: 55,
-    height: 30,
-  },
 
   paper_trash: {
     position: 'absolute',
-    width: 70,
-    height: 40,
-  },
-  apple_trash: {
-    position: 'absolute',
-    width: 50,
-    height: 30,
-  },
-  lemonade_trash: {
-    position: 'absolute',
-    width: 30,
-    height: 20,
+    width: 90,
+    height: 60,
   },
   trash2: {
     position: 'absolute',
-    width: 70,
-    height: 50,
+    width: 164,
+    height: 160,
   },
   scoreText: {
     position: 'absolute',
