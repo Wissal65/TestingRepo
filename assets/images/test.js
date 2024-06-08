@@ -1,72 +1,114 @@
+// import React, { useState, useEffect, useRef } from 'react';
+// import { StyleSheet, View, Text, TouchableWithoutFeedback, Dimensions } from 'react-native';
+// import Bird from './Bird';
+// import Pipe from './Pipe';
 
+// const { width, height } = Dimensions.get('window');
 
-// import { Image, StyleSheet, Platform } from 'react-native';
+// const App = () => {
+//   const BIRD_SIZE = 50;
+//   const GRAVITY = 3;
+//   const JUMP_HEIGHT = 50;
+//   const PIPE_WIDTH = 60;
+//   const PIPE_HEIGHT = 300;
+//   const GAP = 200;
 
-// import { HelloWave } from '@/components/HelloWave';
-// import ParallaxScrollView from '@/components/ParallaxScrollView';
-// import { ThemedText } from '@/components/ThemedText';
-// import { ThemedView } from '@/components/ThemedView';
+//   const [birdBottom, setBirdBottom] = useState(height / 2);
+//   const [pipesLeft, setPipesLeft] = useState(width);
+//   const [pipesNegHeight, setPipesNegHeight] = useState(0);
+//   const [isGameOver, setIsGameOver] = useState(false);
+//   const [score, setScore] = useState(0);
 
-// export default function HomeScreen() {
+//   const gameTimerId = useRef<number | null>(null);
+//   const pipesTimerId = useRef<number | null>(null);
+
+//   // Handle bird falling due to gravity
+//   useEffect(() => {
+//     if (birdBottom > 0) {
+//       gameTimerId.current = window.setInterval(() => {
+//         setBirdBottom(birdBottom => birdBottom - GRAVITY);
+//       }, 30);
+//       return () => clearInterval(gameTimerId.current!);
+//     }
+//   }, [birdBottom]);
+
+//   // Handle pipe movement and reset
+//   useEffect(() => {
+//     if (pipesLeft > -PIPE_WIDTH) {
+//       pipesTimerId.current = window.setInterval(() => {
+//         setPipesLeft(pipesLeft => pipesLeft - 5);
+//       }, 30);
+//       return () => clearInterval(pipesTimerId.current!);
+//     } else {
+//       setPipesLeft(width);
+//       setPipesNegHeight(-Math.random() * (PIPE_HEIGHT / 2)); // Randomize pipe height
+//       setScore(score => score + 1);
+//     }
+//   }, [pipesLeft]);
+
+//   // Handle collision detection
+//   useEffect(() => {
+//     console.log(`Bird Bottom: ${birdBottom}`);
+//     console.log(`Pipes Left: ${pipesLeft}`);
+//     console.log(`Pipe Negative Height: ${pipesNegHeight}`);
+
+//     if (
+//       ((birdBottom < (pipesNegHeight + PIPE_HEIGHT) || birdBottom > (pipesNegHeight + PIPE_HEIGHT + GAP)) &&
+//       (pipesLeft > (width / 2 - BIRD_SIZE / 2) && pipesLeft < (width / 2 + BIRD_SIZE / 2)))
+//     ) {
+//       console.log('Game Over Condition Met');
+//       gameOver();
+//     }
+//   }, [birdBottom, pipesLeft]);
+
+//   // Game over function
+//   const gameOver = () => {
+//     clearInterval(gameTimerId.current!);
+//     clearInterval(pipesTimerId.current!);
+//     setIsGameOver(true);
+//   };
+
+//   // Handle jump
+//   const jump = () => {
+//     console.log('Jump');
+//     if (!isGameOver && birdBottom < height - BIRD_SIZE) {
+//       setBirdBottom(birdBottom => birdBottom + JUMP_HEIGHT);
+//     }
+//   };
+
 //   return (
-//     <ParallaxScrollView
-//       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-//       headerImage={
-//         <Image
-//           source={require('@/assets/images/partial-react-logo.png')}
-//           style={styles.reactLogo}
-//         />
-//       }>
-//       <ThemedView style={styles.titleContainer}>
-//         <ThemedText type="title">Welcome!hhhhhhhhllll</ThemedText>
-//         <HelloWave />
-//       </ThemedView>
-//       <ThemedView style={styles.stepContainer}>
-//         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-//         <ThemedText>
-//           Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-//           Press{' '}
-//           <ThemedText type="defaultSemiBold">
-//             {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-//           </ThemedText>{' '}
-//           to open developer tools.
-//         </ThemedText>
-//       </ThemedView>
-//       <ThemedView style={styles.stepContainer}>
-//         <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-//         <ThemedText>
-//           Tap the Explore tab to learn more about what's included in this starter app.
-//         </ThemedText>
-//       </ThemedView>
-//       <ThemedView style={styles.stepContainer}>
-//         <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-//         <ThemedText>
-//           When you're ready, run{' '}
-//           <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-//           <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-//           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-//           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-//         </ThemedText>
-//       </ThemedView>
-//     </ParallaxScrollView>
+//     <TouchableWithoutFeedback onPress={jump}>
+//       <View style={styles.container}>
+//         <Bird birdBottom={birdBottom} birdLeft={width / 2 - BIRD_SIZE / 2} birdSize={BIRD_SIZE} />
+//         <Pipe pipeLeft={pipesLeft} pipeWidth={PIPE_WIDTH} pipeHeight={PIPE_HEIGHT} pipeBottom={pipesNegHeight + PIPE_HEIGHT + GAP} />
+//         <Pipe pipeLeft={pipesLeft} pipeWidth={PIPE_WIDTH} pipeHeight={PIPE_HEIGHT} pipeBottom={pipesNegHeight} />
+//         <Text style={styles.scoreText}>Score: {score}</Text>
+//         {isGameOver && <Text style={styles.gameOver}>Game Over</Text>}
+//       </View>
+//     </TouchableWithoutFeedback>
 //   );
-// }
+// };
 
 // const styles = StyleSheet.create({
-//   titleContainer: {
-//     flexDirection: 'row',
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#71c5cf',
 //     alignItems: 'center',
-//     gap: 8,
+//     justifyContent: 'center',
 //   },
-//   stepContainer: {
-//     gap: 8,
-//     marginBottom: 8,
-//   },
-//   reactLogo: {
-//     height: 178,
-//     width: 290,
-//     bottom: 0,
-//     left: 0,
+//   scoreText: {
 //     position: 'absolute',
+//     top: 30,
+//     left: 10,
+//     color: 'white',
+//     fontSize: 20,
+//   },
+//   gameOver: {
+//     position: 'absolute',
+//     top: height / 2,
+//     fontSize: 48,
+//     color: 'red',
 //   },
 // });
+
+// export default App;
