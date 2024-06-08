@@ -19,7 +19,7 @@ const imagesWithZones: ImageWithZones[] = [
   {
     image: require('@/assets/images/prob1_.png'),
     zones: [
-      { cx: 290, cy: 169, radius: 55, color: 'rgba(0, 255, 0, 0.2)' },
+      { cx: 290, cy: 169, radius: 75, color: 'rgba(0, 255, 0, 0.2)' },
       { cx: 290, cy: 320, radius: 58, color: 'rgba(255, 255, 0, 0.3)' },
     ],
   },
