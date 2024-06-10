@@ -231,7 +231,7 @@ const App = () => {
             />
           ))}
         </View>
-        <Text style={styles.scoreText}>Score: {score}</Text>
+        {/* <Text style={styles.scoreText}>Score: {score}</Text> */}
         <Text style={styles.timeText}>Time Left: {timeLeft}</Text>
       </ImageBackground>
     </View>

@@ -72,7 +72,7 @@ const App = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [clickSound, setClickSound] = useState<Audio.Sound | null>(null);
   const [correctSound, setCorrectSound] = useState<Audio.Sound | null>(null);
-  const [detectedZones, setDetectedZones] = useState<boolean[]>(new Array(imagesWithZones[currentImageIndex].zones.length).fill(false));
+  const [detectedZones, setDetectedZones] = useState<boolean[]>(new Array(imagesWithZones[0].zones.length).fill(false));
 
 
 
@@ -115,7 +115,8 @@ const App = () => {
   };
 
   const handleZonePress = (zoneIndex: number) => {
-    if (gameOver || disableClick) return;
+    if (gameOver || disableClick || selectedZones.includes(zoneIndex)) return;
+
     if (clickSound) {
       clickSound.replayAsync();
     }
@@ -124,16 +125,17 @@ const App = () => {
     setScore((prevScore) => prevScore + 1);
 
     const currentZones = imagesWithZones[currentImageIndex].zones;
-    if (selectedZones.length === currentZones.length - 1 && selectedZones.includes(zoneIndex)) {
+
+    setDetectedZones((prevDetectedZones) => {
+      const updatedDetectedZones = [...prevDetectedZones];
+      updatedDetectedZones[zoneIndex] = true;
+      return updatedDetectedZones;
+    });
+
+    if (selectedZones.length + 1 === currentZones.length) {
       if (correctSound) {
         correctSound.replayAsync();
       }
-
-      setDetectedZones((prevDetectedZones) => {
-        const updatedDetectedZones = [...prevDetectedZones];
-        updatedDetectedZones[zoneIndex] = true;
-        return updatedDetectedZones;
-      });
 
       if (currentImageIndex < imagesWithZones.length - 1) {
         setDisableClick(true);
@@ -148,11 +150,6 @@ const App = () => {
         setDisableClick(true);
         Alert.alert('Game Over', 'Congratulations! You completed all the images.');
       }
-    
-    } else if (selectedZones.length === currentZones.length - 1 && !selectedZones.includes(zoneIndex)) {
-      setGameOver(false);
-      setDisableClick(false);
-      Alert.alert('Game Over', 'You clicked the same zone twice.');
     }
   };
 
@@ -186,34 +183,29 @@ const App = () => {
                 style={[
                   styles.zone,
                   {
+                    position: 'absolute',
                     top: zone.cy * windowHeight - zone.radius * windowWidth,
                     left: zone.cx * windowWidth - zone.radius * windowWidth,
                     width: zone.radius * 2 * windowWidth,
                     height: zone.radius * 2 * windowWidth,
                     borderRadius: zone.radius * windowWidth,
-                    backgroundColor: zone.color,
+                    borderWidth: selectedZones.includes(index) ? 2 : 0,
+                    borderColor: selectedZones.includes(index) ? 'red' : 'transparent',
+                    backgroundColor: selectedZones.includes(index) ? zone.color : 'transparent',
                   },
                 ]}
               />
             </TouchableWithoutFeedback>
           ))}
+          
           <View style={styles.detectedZonesContainer}>
-            {/* {currentImageWithZones.zones.map((zone, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.detectedZone,
-                  { opacity: selectedZones.includes(index) ? 1 : 0.3 }
-                ]}
-              />
-            ))} */}
             {currentImageWithZones.zones.map((zone, index) => (
               <Icon
                 key={index}
                 name="search"
                 size={windowWidth*0.05}
                 color="green"
-                style={{ opacity: selectedZones.includes(index) ? 1 : 0.2, marginHorizontal: 5 }}
+                style={{ opacity: selectedZones.includes(index) ? 1 : 0.7, marginHorizontal: 5 }}
               />
             ))}
           </View>
@@ -235,10 +227,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   zone: {
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: 'red',
-    backgroundColor: 'transparent',
+    // position: 'absolute',
+    // borderWidth: 2,
+    // borderColor: 'red',
+    // backgroundColor: 'transparent',
   },
   detectedZonesContainer: {
     position: 'absolute',
