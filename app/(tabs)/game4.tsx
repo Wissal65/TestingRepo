@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ImageBackground, TouchableWithoutFeedback, Text, Alert, Dimensions, useWindowDimensions } from 'react-native';
+import { StyleSheet, View, ImageBackground, TouchableWithoutFeedback, Text, Alert, Dimensions, useWindowDimensions, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -200,13 +200,26 @@ const App = () => {
           
           <View style={styles.detectedZonesContainer}>
             {currentImageWithZones.zones.map((zone, index) => (
-              <Icon
-                key={index}
-                name="search"
-                size={windowWidth*0.05}
-                color="green"
-                style={{ opacity: selectedZones.includes(index) ? 1 : 0.7, marginHorizontal: 5 }}
-              />
+              // <Icon
+              //   key={index}
+              //   name="search"
+              //   size={windowWidth*0.05}
+              //   color="green"
+              //   style={{ opacity: selectedZones.includes(index) ? 1 : 0.7, marginHorizontal: 5 }}
+              // />
+
+              <Image
+         key={index}
+         source={require('@/assets/images/icon_loop.png')} // Replace 'your-image-path' with the path to your image
+         style={[
+        {
+          width: windowWidth * 0.05,
+          height: windowWidth * 0.05,
+          opacity: selectedZones.includes(index) ? 1 : 0.7,
+          marginHorizontal: 5,
+        },
+      ]}
+    />
             ))}
           </View>
           {/* <Text style={styles.scoreText}>Score: {score}</Text> */}
@@ -233,17 +246,26 @@ const styles = StyleSheet.create({
     // backgroundColor: 'transparent',
   },
   detectedZonesContainer: {
-    position: 'absolute',
-    // top: 10,
+    // position: 'absolute',
+    // // top: 10,
+    // // left: 10,
+    // top:  30,
     // left: 10,
-    top:  30,
-    left: 10,
+    // flexDirection: 'row',
+    // backgroundColor: 'black',
+    // opacity: 0.55,
+    // padding: 6,
+    // borderRadius: 31,
+    // gap: 3
+    position: 'absolute',
+    top: windowHeight * 0.03,
+    left: windowWidth * 0.04,
     flexDirection: 'row',
     backgroundColor: 'black',
-    opacity: 0.55,
+    opacity: 0.75,
     padding: 6,
     borderRadius: 31,
-    gap: 3
+    gap: 3,
   },
   detectedZone: {
     // position: 'absolute',
@@ -263,11 +285,16 @@ const styles = StyleSheet.create({
     // fontSize: 20,
   },
   timeText: {
+    // position: 'absolute',
+    // top: 30,
+    // right: 10,
+    // color: 'white',
+    // fontSize: 20,
     position: 'absolute',
-    top: 30,
-    right: 10,
+    top: windowHeight * 0.03,
+    right: windowWidth * 0.04,
     color: 'white',
-    fontSize: 20,
+    fontSize: 22,
   },
 });
 
